@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./qdrant_data:/qdrant/storage
+      - ./logs:/qdrant/logs
+    command: >
+      bash -c "/qdrant/entrypoint.sh >> /qdrant/logs/qdrant.log 2>&1"
+    restart: unless-stopped
+
+    
+  api:
+    image: smart_search_vlm_2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./video_examples:/app/video_examples
+      - ./video_examples_raw:/app/video_examples_raw
+#      - ./previews:/app/previews
+      - ./static/previews:/app/static/previews
+      - ./logs:/app/logs
+    depends_on:
+      - qdrant
+    environment:
+      - QDRANT_HOST=qdrant
+    command: >
+      bash -c "python main.py --mode serve --host 0.0.0.0 --port 8000 >> /app/logs/api.log 2>&1"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  streamlit:
+    image: smart_search_vlm_2
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./video_examples:/app/video_examples
+      - ./video_examples_raw:/app/video_examples_raw
+      - ./previews:/app/previews
+      - ./logs:/app/logs
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      - API_URL=http://api:8000
+      - QDRANT_HOST=qdrant
+    command: >
+      bash -c "streamlit run streamlit_app.py --server.address=0.0.0.0 >> /app/logs/streamlit.log 2>&1"
+    restart: unless-stopped
