@@ -28,7 +28,7 @@
 ## Как запустить приложение:
 1. Склонировать себе на машину, на машине иметь docker, и любую IDE для запуска python-приложений (в моем случае был pycharm);
 2. Устанавливаем все зависимости: `pip install -r requirements.txt`
-3. Билдим и запускаем контейнер: `docker-compose up -d`
+3. Билдим и запускаем контейнер: `docker-compose up --build`
 4. (При необходимости) Можем сделать индексацию видео через терминал: `docker-compose exec api python main.py --mode index --videos_dir /app/video_examples`
 
 ## Куда смотреть после запуска:
