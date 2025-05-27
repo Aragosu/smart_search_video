@@ -56,7 +56,6 @@ def index_videos(videos_dir, force_reindex=False):
     indexed_videos = set()
     if not force_reindex:
         try:
-            # тут лимит на 1000 записей
             scroll_result = db_manager.client.scroll(
                 collection_name=db_manager.collection_name,
                 limit=1000,
@@ -117,7 +116,7 @@ def index_videos(videos_dir, force_reindex=False):
                 metadata={
                     "transcript": transcript,
                     "frames_count": len(frames),
-                    "preview_path": '-'#preview_rel_path
+                    "preview_path": '-'
                 }
             )
             

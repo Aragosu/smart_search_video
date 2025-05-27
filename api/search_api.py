@@ -56,9 +56,7 @@ def create_app():
             search_query: запрос для поиска видео
         вывод: список найденных видео с оценкой
         '''
-
         cache_mark = config.CACHE_MARK
-
         try:
             # dense-эмбеддинги
             text_dense_vector = embedder.create_text_embeddings(search_query.query)

@@ -17,8 +17,6 @@ import config
 import time
 
 class QdrantManager:
-    '''класс для работы с qdrant'''
-    
     def __init__(self, max_retries=3, retry_delay=2):
         '''
         инициализация клиента qdrant и создание коллекции если не существует
@@ -51,7 +49,7 @@ class QdrantManager:
                     self._initialize_collections()
     
     def _initialize_collections(self):
-        '''инициализация коллекции с тремя векторными пространствами'''
+        '''инициализация коллекций'''
         try:
             collections = self.client.get_collections().collections
             collection_names = [c.name for c in collections]

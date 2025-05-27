@@ -118,8 +118,7 @@ class VideoProcessor:
         if successfully_converted:
             for source_path in successfully_converted:
                 os.remove(source_path)
-        
-        # Выводим итоговую статистику
+
         print("\nИтоги конвертации видео:")
         print(f"  - Успешно сконвертировано и перемещено: {len(successfully_converted)}")
         print(f"  - Пропущено (уже существуют): {len(skipped_files)}")
@@ -163,8 +162,6 @@ class VideoProcessor:
         
         try:
             video = VideoFileClip(video_path)
-            
-            # проверка на наличие аудио в видео
             if video.audio is None:
                 dummy_audio = np.zeros(16000, dtype=np.float32)
                 sf.write(temp_audio_path, dummy_audio, 16000)
@@ -187,7 +184,6 @@ class VideoProcessor:
     def transcribe_audio(self, audio_path: str) -> str:
         '''транскрипция аудио в текст с использованием faster-whisper'''
         try:
-            # проверка на наличие файла
             if not os.path.exists(audio_path):
                 print(f"Предупреждение: аудиофайл {audio_path} не существует")
                 return ""
@@ -211,7 +207,7 @@ class VideoProcessor:
     
     def save_preview_image(self, video_path: str) -> str:
         '''
-        создаем превьюхи, чтобы видеть на фронте
+        (отключена, но вдруг пригодится в будущих версиях) создаем превьюхи, чтобы видеть на фронте
         параметры:
             video_path: путь к видео
         вывод: путь к сохраненной превьюхе
@@ -231,12 +227,10 @@ class VideoProcessor:
             video_basename = os.path.basename(video_path)
             video_name_without_ext = os.path.splitext(video_basename)[0]
             preview_path = os.path.join(previews_dir, f"{video_name_without_ext}.jpg")
-            
-            # если превью есть, то вернем путь
+
             if os.path.exists(preview_path):
                 return preview_path
-            
-            # Открываем видео и читаем первый кадр
+
             vidcap = cv2.VideoCapture(video_path)
             success, image = vidcap.read()
             

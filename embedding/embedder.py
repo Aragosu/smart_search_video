@@ -8,8 +8,6 @@ from fastembed.sparse import SparseTextEmbedding
 import config
 
 class MultimodalEmbedder:
-    '''класс для создания мультимодальных эмбеддингов'''
-    
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         
@@ -18,7 +16,6 @@ class MultimodalEmbedder:
         self.text_model = SentenceTransformer(config.TEXT_MODEL).to(self.device)
         self.text_sparse_model = SparseTextEmbedding(config.TEXT_SPARSE_MODEL)#.to(self.device)
 
-    
     def create_visual_embeddings(self, frames: List[np.ndarray]) -> np.ndarray:
         '''создание мультимодальных эмбеддингов из фреймов (для визуальных эмбедов)'''
         embeddings = []
